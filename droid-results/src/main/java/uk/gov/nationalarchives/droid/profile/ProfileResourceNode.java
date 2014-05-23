@@ -62,6 +62,7 @@ import javax.persistence.Transient;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
@@ -84,6 +85,11 @@ import uk.gov.nationalarchives.droid.profile.types.UriType;
       columns = { @ColumnResult(name = "FilterStatus") }
   )
 })
+//BNO
+@GenericGenerator(
+name = "test-strategy",
+strategy = "hilo")
+
 public class ProfileResourceNode {
 
     private static final int URI_LENGTH = 4000;
@@ -91,7 +97,11 @@ public class ProfileResourceNode {
     @Id
     // If using the BatchResultHandler, we assign our own ids, so do not use the generatedvalue.
     // If using the ResultHandlerImpl, ids are assigned by the database, so we need the line below.
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    //@GeneratedValue(strategy = GenerationType.AUTO)
+    // BNO: Still getting the null value error on node_id after updating to org.hibernate.dialect.DerbyTenSevenDialect in spring-jpa.xml, with
+    // both GenerationType.AUTO and GenerationType.IDENTITY. This seems to be the latest specific dialect version even though the driver is now 10.10...
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator = "test-strategy")
     @Column(name = "node_id")
     private Long id;
     
