@@ -246,7 +246,6 @@ public class CommandFactoryImpl implements CommandFactory {
         command.setQuiet(cli.hasOption(CommandLineParam.QUIET.toString()));
         command.setTempDir(context.getGlobalConfig().getTempDir());
         return command;
-        
     }
 
     /**
