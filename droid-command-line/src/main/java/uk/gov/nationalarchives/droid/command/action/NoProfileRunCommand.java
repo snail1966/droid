@@ -49,8 +49,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import uk.gov.nationalarchives.droid.command.ResultPrinter;
+import uk.gov.nationalarchives.droid.command.container.ContainerContentIdentifier;
+import uk.gov.nationalarchives.droid.command.container.Ole2ContainerContentIdentifier;
+import uk.gov.nationalarchives.droid.command.container.ZipContainerContentIdentifier;
 import uk.gov.nationalarchives.droid.container.ContainerSignatureDefinitions;
 import uk.gov.nationalarchives.droid.container.ContainerSignatureSaxParser;
+import uk.gov.nationalarchives.droid.container.ole2.Ole2IdentifierEngine;
+import uk.gov.nationalarchives.droid.container.zip.ZipIdentifierEngine;
 import uk.gov.nationalarchives.droid.core.BinarySignatureIdentifier;
 import uk.gov.nationalarchives.droid.core.SignatureParseException;
 import uk.gov.nationalarchives.droid.core.interfaces.IdentificationRequest;
@@ -85,7 +90,11 @@ public class NoProfileRunCommand implements DroidCommand {
     private boolean recursive;
     private boolean archives;
     private boolean webArchives;
+    private File tempDir;
     private Log log = LogFactory.getLog(this.getClass());
+
+    private final String OLE2_CONTAINER = "OLE2";
+    private final String ZIP_CONTAINER = "ZIP";
 
     //CHECKSTYLE:OFF
     /**
@@ -161,11 +170,23 @@ public class NoProfileRunCommand implements DroidCommand {
             	}
             }
         }
-        
+
+        ContainerContentIdentifier ole2Identifier = new Ole2ContainerContentIdentifier();
+        ole2Identifier.init(containerSignatureDefinitions, OLE2_CONTAINER);
+        Ole2IdentifierEngine ole2IdentifierEngine = new Ole2IdentifierEngine();
+        ole2Identifier.setIdentifierEngine(ole2IdentifierEngine);
+        ole2IdentifierEngine.setTempDir(tempDir);
+
+        ContainerContentIdentifier zipIdentifier = new ZipContainerContentIdentifier();
+        zipIdentifier.init(containerSignatureDefinitions, ZIP_CONTAINER);
+        ZipIdentifierEngine zipIdentifierEngine = new ZipIdentifierEngine();
+        zipIdentifier.setIdentifierEngine(zipIdentifierEngine);
+        zipIdentifierEngine.setTempDir(tempDir);
+
         path = "";
         ResultPrinter resultPrinter =
             new ResultPrinter(binarySignatureIdentifier, containerSignatureDefinitions,
-                path, slash, slash1, archives, webArchives);
+                zipIdentifier, ole2Identifier, path, slash, slash1, archives, webArchives);
 
         String fileName = null;
         for (File file : matchedFiles) {
@@ -321,5 +342,14 @@ public class NoProfileRunCommand implements DroidCommand {
      */
     public void setQuiet(final boolean quiet) {
         this.quietFlag = quiet;
+    }
+
+    /**
+     * Sets the directory for temporary files.
+     *
+     * @param tempDir
+     */
+    public void setTempDir(final File tempDir) {
+        this.tempDir = tempDir;
     }
 }

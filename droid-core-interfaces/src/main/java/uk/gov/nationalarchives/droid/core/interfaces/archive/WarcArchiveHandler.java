@@ -56,7 +56,7 @@ import uk.gov.nationalarchives.droid.core.interfaces.resource.RequestMetaData;
  * @author gseaman
  *
  */
-public class WarcArchiveHandler extends WebArchiveHandler implements ArchiveHandler {
+public class WarcArchiveHandler extends WebArchiveHandler {
     /**
      * Used to generate URIs within Warc file
      */

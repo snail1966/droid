@@ -31,6 +31,7 @@
  */
 package uk.gov.nationalarchives.droid.container.zip;
 
+import java.io.File;
 import java.io.InputStream;
 import java.io.IOException;
 import java.util.List;
@@ -50,30 +51,7 @@ import uk.gov.nationalarchives.droid.core.signature.ByteReader;
  */
 public class ZipIdentifierEngine extends AbstractIdentifierEngine {
 
-
-    // Use built in java zip processing.
-    /*
     @Override
-    public void process(IdentificationRequest request, ContainerSignatureMatchCollection matches) throws IOException {
-        InputStream in = request.getSourceInputStream();
-        try {
-            final ZipInputStream zin = new ZipInputStream(in);
-            try {
-                // For each entry:
-                for (String entryName : matches.getAllFileEntries()) {
-                    //TODO:MP rewrite zip identifier engine to use built-in java processing.
-
-                }
-            } finally {
-                zin.close();
-            }
-        } finally {
-            in.close();
-        }
-    }
-    */
-
-        @Override
     public void process(IdentificationRequest request, ContainerSignatureMatchCollection matches) throws IOException {
         BasicZipFile zipFile = new BasicZipFile(new ReaderReadOnlyFile(request.getWindowReader()));
         try {

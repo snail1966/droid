@@ -31,13 +31,13 @@
  */
 package uk.gov.nationalarchives.droid.command.container;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import uk.gov.nationalarchives.droid.container.ContainerFileIdentificationRequest;
 import uk.gov.nationalarchives.droid.container.ContainerIdentifierInit;
 import uk.gov.nationalarchives.droid.container.ContainerSignatureDefinitions;
 import uk.gov.nationalarchives.droid.container.ContainerSignatureMatch;
@@ -48,13 +48,15 @@ import uk.gov.nationalarchives.droid.core.interfaces.IdentificationMethod;
 import uk.gov.nationalarchives.droid.core.interfaces.IdentificationRequest;
 import uk.gov.nationalarchives.droid.core.interfaces.IdentificationResultCollection;
 import uk.gov.nationalarchives.droid.core.interfaces.IdentificationResultImpl;
+import uk.gov.nationalarchives.droid.core.interfaces.resource.InputStreamIdentificationRequest;
 
 /**
  *
  * @author rbrennan
  */
 public abstract class AbstractContainerContentIdentifier implements ContainerContentIdentifier {
-    
+
+    private File tempDir;
     private ContainerIdentifierInit containerIdentifierInit;
     private IdentifierEngine identifierEngine;
     
@@ -111,8 +113,8 @@ public abstract class AbstractContainerContentIdentifier implements ContainerCon
     @Override
     public IdentificationResultCollection process(
         final InputStream in, final IdentificationResultCollection containerResults) throws IOException {
-        
-        final IdentificationRequest<InputStream> request = new ContainerFileIdentificationRequest(null);
+
+        final IdentificationRequest<InputStream> request = new InputStreamIdentificationRequest(null, null, tempDir);
 
         try {
             request.open(in);
@@ -148,5 +150,10 @@ public abstract class AbstractContainerContentIdentifier implements ContainerCon
             }
         }
         return containerResults;
+    }
+
+    @Override
+    public void setTempDir(File tempDir) {
+        this.tempDir = tempDir;
     }
 }

@@ -31,6 +31,7 @@
  */
 package uk.gov.nationalarchives.droid.core.interfaces.archive;
 
+import java.io.File;
 import java.io.IOException;
 
 import uk.gov.nationalarchives.droid.core.interfaces.IdentificationRequest;
@@ -48,5 +49,13 @@ public interface ArchiveHandler {
      * @throws IOException if there was an error reading from the input stream
      */
     void handle(IdentificationRequest request) throws IOException;
+
+    /**
+     * Sets the temporary directory to use if the archive handler must
+     * store a stream on disk while processing it.
+     *
+     * @param tempDir The temporary directory in which temporary files are created.
+     */
+    void setTempDir(File tempDir);
 
 }

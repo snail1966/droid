@@ -57,7 +57,7 @@ import uk.gov.nationalarchives.droid.core.interfaces.resource.RequestMetaData;
  * @author gseaman
  *
  */
-public class ArcArchiveHandler extends WebArchiveHandler implements ArchiveHandler {
+public class ArcArchiveHandler extends WebArchiveHandler {
     /**
      * Used to generate URIs within Arc file
      */

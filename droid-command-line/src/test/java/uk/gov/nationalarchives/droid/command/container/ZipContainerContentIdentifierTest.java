@@ -62,7 +62,6 @@ public class ZipContainerContentIdentifierTest {
     
     private ZipContainerContentIdentifier zipContainerContentIdentifier;
     private ZipIdentifierEngine zipIdentifierEngine;
-    private ContainerFileIdentificationRequestFactory requestFactory;
     private ContainerIdentifierInit containerIdentifierInit;
     private ContainerSignatureDefinitions containerSignatureDefinitions;
     private Map<Integer, List<FileFormatMapping>> formats; 
@@ -74,7 +73,6 @@ public class ZipContainerContentIdentifierTest {
     @Before
     public void setUp() {
         zipContainerContentIdentifier = new ZipContainerContentIdentifier();
-        requestFactory = new ContainerFileIdentificationRequestFactory();
         zipIdentifierEngine = new ZipIdentifierEngine();
         containerIdentifierInit = new ContainerIdentifierInit();
         formats = new HashMap<Integer, List<FileFormatMapping>>();
@@ -83,7 +81,6 @@ public class ZipContainerContentIdentifierTest {
     @After
     public void tearDown() {
         zipContainerContentIdentifier = null;
-        requestFactory = null;
         zipIdentifierEngine = null;
         containerIdentifierInit = null;
         formats = null;
@@ -92,7 +89,6 @@ public class ZipContainerContentIdentifierTest {
     @Test
     public void identifyZipFileTest() throws CommandExecutionException {
 
-        zipIdentifierEngine.setRequestFactory(requestFactory);
         zipContainerContentIdentifier.setIdentifierEngine(zipIdentifierEngine);
         Object object = zipContainerContentIdentifier.getIdentifierEngine();
         assertEquals(object.getClass(), zipIdentifierEngine.getClass());

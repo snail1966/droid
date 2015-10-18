@@ -31,10 +31,12 @@
  */
 package uk.gov.nationalarchives.droid.command.container;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
 import uk.gov.nationalarchives.droid.container.ContainerSignatureDefinitions;
+import uk.gov.nationalarchives.droid.container.IdentifierEngine;
 import uk.gov.nationalarchives.droid.core.interfaces.IdentificationResultCollection;
 
 /**
@@ -59,4 +61,14 @@ public interface ContainerContentIdentifier {
      */
     IdentificationResultCollection process(InputStream in,
         IdentificationResultCollection containerResults) throws IOException;
+
+    void setIdentifierEngine(final IdentifierEngine identifierEngine);
+
+    /**
+     * Sets the directory which temporary files should be created in when a container
+     * is being processed.
+     *
+     * @param tempDir The directory for temporary files.
+     */
+    void setTempDir(File tempDir);
 }

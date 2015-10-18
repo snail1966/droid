@@ -61,7 +61,6 @@ import uk.gov.nationalarchives.droid.core.interfaces.resource.RequestMetaData;
 public class Ole2ContainerContentIdentifierTest {
     
     private Ole2ContainerContentIdentifier ole2ContainerContentIdentifier;
-    private ContainerFileIdentificationRequestFactory requestFactory;
     private Ole2IdentifierEngine ole2IdentifierEngine;
     private ContainerIdentifierInit containerIdentifierInit;
     private ContainerSignatureDefinitions containerSignatureDefinitions;
@@ -74,7 +73,6 @@ public class Ole2ContainerContentIdentifierTest {
     @Before
     public void setUp() {
         ole2ContainerContentIdentifier = new Ole2ContainerContentIdentifier();
-        requestFactory = new ContainerFileIdentificationRequestFactory();
         ole2IdentifierEngine = new Ole2IdentifierEngine();
         containerIdentifierInit = new ContainerIdentifierInit();
         formats = new HashMap<Integer, List<FileFormatMapping>>();
@@ -83,7 +81,6 @@ public class Ole2ContainerContentIdentifierTest {
     @After
     public void tearDown() {
         ole2ContainerContentIdentifier = null;
-        requestFactory = null;
         ole2IdentifierEngine = null;
         containerIdentifierInit = null;
         formats = null;
@@ -92,7 +89,6 @@ public class Ole2ContainerContentIdentifierTest {
     @Test
     public void identifyOle2FileTest() throws CommandExecutionException {
 
-        ole2IdentifierEngine.setRequestFactory(requestFactory);
         ole2ContainerContentIdentifier.setIdentifierEngine(ole2IdentifierEngine);
         Object object = ole2ContainerContentIdentifier.getIdentifierEngine();
         assertEquals(object.getClass(), ole2IdentifierEngine.getClass());

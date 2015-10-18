@@ -47,8 +47,7 @@ import uk.gov.nationalarchives.droid.container.ContainerSignatureDefinitions;
 import uk.gov.nationalarchives.droid.core.BinarySignatureIdentifier;
 import uk.gov.nationalarchives.droid.core.interfaces.IdentificationRequest;
 import uk.gov.nationalarchives.droid.core.interfaces.RequestIdentifier;
-import uk.gov.nationalarchives.droid.core.interfaces.archive.WebArchiveEntryRequestFactory;
-import uk.gov.nationalarchives.droid.core.interfaces.archive.IdentificationRequestFactory;
+import uk.gov.nationalarchives.droid.core.interfaces.resource.InputStreamIdentificationRequest;
 import uk.gov.nationalarchives.droid.core.interfaces.resource.RequestMetaData;
 
 /**
@@ -88,7 +87,6 @@ public class ArcArchiveContentIdentifier extends ArchiveContentIdentifier {
 
         final String newPath = makeContainerURI("arc", request.getFileName());
         setSlash1("");
-        final IdentificationRequestFactory factory  = new WebArchiveEntryRequestFactory();
         InputStream arcIn = null;
         try {
             arcIn = request.getSourceInputStream();
@@ -122,7 +120,7 @@ public class ArcArchiveContentIdentifier extends ArchiveContentIdentifier {
 
                             final RequestIdentifier identifier = new RequestIdentifier(uri);
 
-                            IdentificationRequest arcRequest = factory.newRequest(metaData, identifier);
+                            IdentificationRequest<InputStream> arcRequest = new InputStreamIdentificationRequest(metaData, identifier, getTmpDir());
                             InputStream in = base.getPayloadContent();
                             expandContainer(arcRequest, in, newPath);
 

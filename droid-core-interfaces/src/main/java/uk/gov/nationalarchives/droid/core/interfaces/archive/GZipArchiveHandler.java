@@ -31,6 +31,7 @@
  */
 package uk.gov.nationalarchives.droid.core.interfaces.archive;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -41,6 +42,7 @@ import org.apache.commons.io.FilenameUtils;
 import uk.gov.nationalarchives.droid.core.interfaces.AsynchDroid;
 import uk.gov.nationalarchives.droid.core.interfaces.IdentificationRequest;
 import uk.gov.nationalarchives.droid.core.interfaces.RequestIdentifier;
+import uk.gov.nationalarchives.droid.core.interfaces.resource.InputStreamIdentificationRequest;
 import uk.gov.nationalarchives.droid.core.interfaces.resource.RequestMetaData;
 
 /**
@@ -49,7 +51,7 @@ import uk.gov.nationalarchives.droid.core.interfaces.resource.RequestMetaData;
  */
 public class GZipArchiveHandler implements ArchiveHandler {
 
-    private IdentificationRequestFactory factory;
+    File tempDir;
     private AsynchDroid droid;
     
     /**
@@ -72,7 +74,7 @@ public class GZipArchiveHandler implements ArchiveHandler {
             identifier.setAncestorId(request.getIdentifier().getAncestorId());
             identifier.setParentId(correlationId);
 
-            archiveRequest = factory.newRequest(metaData, identifier);
+            archiveRequest = new InputStreamIdentificationRequest(metaData, identifier, tempDir);
             final InputStream gzin = new GZIPInputStream(in);
             try {
                 archiveRequest.open(gzin);
@@ -90,12 +92,10 @@ public class GZipArchiveHandler implements ArchiveHandler {
             droid.submit(archiveRequest);
         }
     }
-    
-    /**
-     * @param factory factory for generating identification requests.
-     */
-    public final void setFactory(IdentificationRequestFactory factory) {
-        this.factory = factory;
+
+    @Override
+    public void setTempDir(File tempDir) {
+        this.tempDir = tempDir;
     }
 
     /**

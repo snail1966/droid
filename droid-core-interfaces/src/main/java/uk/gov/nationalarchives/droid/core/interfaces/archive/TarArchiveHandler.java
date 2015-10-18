@@ -31,6 +31,7 @@
  */
 package uk.gov.nationalarchives.droid.core.interfaces.archive;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -51,6 +52,7 @@ import uk.gov.nationalarchives.droid.core.interfaces.IdentificationResultImpl;
 import uk.gov.nationalarchives.droid.core.interfaces.RequestIdentifier;
 import uk.gov.nationalarchives.droid.core.interfaces.ResourceId;
 import uk.gov.nationalarchives.droid.core.interfaces.ResultHandler;
+import uk.gov.nationalarchives.droid.core.interfaces.resource.InputStreamIdentificationRequest;
 import uk.gov.nationalarchives.droid.core.interfaces.resource.RequestMetaData;
 
 /**
@@ -59,8 +61,8 @@ import uk.gov.nationalarchives.droid.core.interfaces.resource.RequestMetaData;
  */
 public class TarArchiveHandler implements ArchiveHandler {
 
+    private File tempDir;
     private AsynchDroid droidCore;
-    private IdentificationRequestFactory<InputStream> factory;
     private ResultHandler resultHandler;
     
     /**
@@ -93,7 +95,12 @@ public class TarArchiveHandler implements ArchiveHandler {
             }
         }
     }
-    
+
+    @Override
+    public void setTempDir(File tempDir) {
+        this.tempDir = tempDir;
+    }
+
     /**
      * Adapts a TarArchiveInputStream to an iterator.
      * @author rflitcroft
@@ -140,7 +147,7 @@ public class TarArchiveHandler implements ArchiveHandler {
             new RequestIdentifier(ArchiveFileUtils.toTarUri(parentName, entry.getName()));
         identifier.setAncestorId(originatorNodeId);
         identifier.setParentResourceId(correlationId);
-        IdentificationRequest<InputStream> request = factory.newRequest(metaData, identifier);
+        IdentificationRequest<InputStream> request = new InputStreamIdentificationRequest(metaData, identifier, tempDir, false);
         request.open(in);
         droidCore.submit(request);
     }
@@ -173,14 +180,6 @@ public class TarArchiveHandler implements ArchiveHandler {
         return resultHandler.handleDirectory(result, correlationId, false);
     }
     
-    
-    /**
-     * @param factory the factory to set
-     */
-    public final void setFactory(IdentificationRequestFactory factory) {
-        this.factory = factory;
-    }
-
     /**
      * @param droidCore the droidCore to set
      */

@@ -53,7 +53,7 @@ public class ZipEntryIdentificationRequestTest {
 
     private static File tmpDir;
 
-    private ZipEntryIdentificationRequest zipResource;
+    private InputStreamIdentificationRequest zipResource;
     private String droidZipFileName;
     private InputStream in;
     private ZipEntry entry;
@@ -91,7 +91,7 @@ public class ZipEntryIdentificationRequestTest {
         //when(metaData.getSize()).thenReturn(entry.getSize());
         //when(metaData.getName()).thenReturn("profile.xml");
         
-        zipResource = new ZipEntryIdentificationRequest(metaData, identifier, tmpDir);
+        zipResource = new InputStreamIdentificationRequest(metaData, identifier, tmpDir);
         zipResource.open(in);
         //assertEquals(1, zipResource.getCache().getBuffers().size());
         //assertNotNull(zipResource.getCache().getSourceFile());

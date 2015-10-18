@@ -31,6 +31,7 @@
  */
 package uk.gov.nationalarchives.droid.core.interfaces.archive;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -51,6 +52,7 @@ import uk.gov.nationalarchives.droid.core.interfaces.IdentificationResultImpl;
 import uk.gov.nationalarchives.droid.core.interfaces.RequestIdentifier;
 import uk.gov.nationalarchives.droid.core.interfaces.ResourceId;
 import uk.gov.nationalarchives.droid.core.interfaces.ResultHandler;
+import uk.gov.nationalarchives.droid.core.interfaces.resource.InputStreamIdentificationRequest;
 import uk.gov.nationalarchives.droid.core.interfaces.resource.RequestMetaData;
 
 /**
@@ -59,9 +61,9 @@ import uk.gov.nationalarchives.droid.core.interfaces.resource.RequestMetaData;
  */
 public class TrueZipArchiveHandler implements ArchiveHandler {
 
+    private File tempDir;
     private AsynchDroid droidCore;
-    private IdentificationRequestFactory<InputStream> factory;
-    private ResultHandler resultHandler;    
+    private ResultHandler resultHandler;
     
     /**
      * {@inheritDoc}
@@ -84,6 +86,11 @@ public class TrueZipArchiveHandler implements ArchiveHandler {
                 zipFile.close();
             }
         }
+    }
+
+    @Override
+    public void setTempDir(File tempDir) {
+        this.tempDir = tempDir;
     }
 
     /**
@@ -139,7 +146,7 @@ public class TrueZipArchiveHandler implements ArchiveHandler {
         identifier.setAncestorId(originatorNodeId);
         identifier.setParentResourceId(correlationId);
 
-        IdentificationRequest request = factory.newRequest(metaData, identifier);
+        IdentificationRequest<InputStream> request = new InputStreamIdentificationRequest(metaData, identifier, tempDir);
         InputStream in = null;
         try {
             in = file.getInputStream(entry);
@@ -152,13 +159,6 @@ public class TrueZipArchiveHandler implements ArchiveHandler {
         droidCore.submit(request);
     }
     
-    /**
-     * @param factory the factory to set
-     */
-    public final void setFactory(IdentificationRequestFactory factory) {
-        this.factory = factory;
-    }
-
     /**
      * @param droidCore the droidCore to set
      */

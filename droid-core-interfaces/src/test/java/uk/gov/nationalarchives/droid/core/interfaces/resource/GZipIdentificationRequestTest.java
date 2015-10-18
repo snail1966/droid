@@ -61,7 +61,7 @@ public class GZipIdentificationRequestTest {
 
     private static String fileData;
 
-    private GZipIdentificationRequest gzRequest;
+    private InputStreamIdentificationRequest gzRequest;
     private File file;
 
     private RequestMetaData metaData;
@@ -98,7 +98,7 @@ public class GZipIdentificationRequestTest {
         
         metaData = new RequestMetaData(null, null, "foo");
         identifier = new RequestIdentifier(URI.create(GzipUtils.getUncompressedFilename(file.toURI().toString())));
-        gzRequest = new GZipIdentificationRequest(
+        gzRequest = new InputStreamIdentificationRequest(
                 metaData, identifier,
                 new File("tmp"));
         GzipCompressorInputStream in = new GzipCompressorInputStream(new FileInputStream(file));

@@ -54,13 +54,11 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 import uk.gov.nationalarchives.droid.core.interfaces.AsynchDroid;
-import uk.gov.nationalarchives.droid.core.interfaces.IdentificationErrorType;
 import uk.gov.nationalarchives.droid.core.interfaces.IdentificationException;
 import uk.gov.nationalarchives.droid.core.interfaces.IdentificationRequest;
 import uk.gov.nationalarchives.droid.core.interfaces.RequestIdentifier;
 import uk.gov.nationalarchives.droid.core.interfaces.ResourceId;
 import uk.gov.nationalarchives.droid.core.interfaces.ResultHandler;
-import uk.gov.nationalarchives.droid.core.interfaces.archive.IdentificationRequestFactory;
 import uk.gov.nationalarchives.droid.core.interfaces.resource.RequestMetaData;
 import uk.gov.nationalarchives.droid.profile.AbstractProfileResource;
 import uk.gov.nationalarchives.droid.profile.ProfileResourceNode;
@@ -72,7 +70,6 @@ import uk.gov.nationalarchives.droid.profile.throttle.SubmissionThrottle;
  */
 public class FileEventHandlerTest {
 
-    private IdentificationRequestFactory<File> requestFactory;
     private IdentificationRequest<File> request;
     private FileEventHandler fileEventHandler;
     private AsynchDroid identificationEngine;
@@ -81,12 +78,8 @@ public class FileEventHandlerTest {
     @Before
     public void setup() throws IOException {
         identificationEngine = mock(AsynchDroid.class);
-        requestFactory = mock(IdentificationRequestFactory.class);
         request = mock(IdentificationRequest.class);
         fileEventHandler = new FileEventHandler(identificationEngine);
-        when(requestFactory.newRequest(any(RequestMetaData.class), any(RequestIdentifier.class))).thenReturn(request);
-        fileEventHandler.setRequestFactory(requestFactory);
-        
         tmpDir = new File("tmp/");
         tmpDir.mkdir();
     }
@@ -137,11 +130,7 @@ public class FileEventHandlerTest {
         final File file = new File("non-existent");
         assertFalse(file.exists());
         
-        when(requestFactory.newRequest(any(RequestMetaData.class), any(RequestIdentifier.class)))
-            .thenReturn(request);
-        
-        fileEventHandler.setRequestFactory(requestFactory);
-        
+
         ResultHandler resultHandler = mock(ResultHandler.class);
         
         fileEventHandler.setResultHandler(resultHandler);
@@ -170,15 +159,11 @@ public class FileEventHandlerTest {
         final File file = new File("tmp/unreadable.file");
         file.createNewFile();
         assertTrue(file.exists());
-        
-        when(requestFactory.newRequest(any(RequestMetaData.class), any(RequestIdentifier.class)))
-            .thenReturn(request);
+
         
         final IOException ioException = new IOException("Can't read me!");
         doThrow(ioException).when(request).open(any(File.class));
-        
-        fileEventHandler.setRequestFactory(requestFactory);
-        
+
         ResultHandler resultHandler = mock(ResultHandler.class);
         
         fileEventHandler.setResultHandler(resultHandler);

@@ -59,7 +59,6 @@ import uk.gov.nationalarchives.droid.core.interfaces.IdentificationResultCollect
 import uk.gov.nationalarchives.droid.core.interfaces.RequestIdentifier;
 import uk.gov.nationalarchives.droid.core.interfaces.archive.ArchiveFormatResolver;
 import uk.gov.nationalarchives.droid.core.interfaces.archive.ContainerIdentifierFactory;
-import uk.gov.nationalarchives.droid.core.interfaces.archive.IdentificationRequestFactory;
 import uk.gov.nationalarchives.droid.core.interfaces.resource.RequestMetaData;
 
 /**
@@ -150,11 +149,6 @@ public class Ole2RootFileTest {
         RequestIdentifier requestIdentifier = mock(RequestIdentifier.class);
         when(request.getIdentifier()).thenReturn(requestIdentifier);
         
-        IdentificationRequestFactory requestFactory = mock(IdentificationRequestFactory.class);
-        when(requestFactory.newRequest(null, null))
-            .thenReturn(request);
-//        ole2Identifier.setRequestFactory(requestFactory);
-        
         IdentificationResultCollection results = ole2Identifier.submit(request);
         
         assertEquals("fmt/666", results.getResults().iterator().next().getPuid());
@@ -208,11 +202,7 @@ public class Ole2RootFileTest {
         when(request.getRequestMetaData()).thenReturn(metaData);
         RequestIdentifier requestIdentifier = mock(RequestIdentifier.class);
         when(request.getIdentifier()).thenReturn(requestIdentifier);
-        
-        IdentificationRequestFactory requestFactory = mock(IdentificationRequestFactory.class);
-        when(requestFactory.newRequest(null, null)).thenReturn(request);
-//        ole2Identifier.setRequestFactory(requestFactory);
-        
+
         IdentificationResultCollection results = ole2Identifier.submit(request);
         
         assertEquals("fmt/666", results.getResults().iterator().next().getPuid());
@@ -236,12 +226,9 @@ public class Ole2RootFileTest {
         ole2Identifier.setSignatureFileParser(new ContainerSignatureSaxParser());
         ole2Identifier.setContainerType("OLE2");
         ole2Identifier.setSignatureFilePath(path);
-        IdentificationRequestFactory requestFactory = mock(IdentificationRequestFactory.class);
-        
+
         IdentificationRequest request = mock(IdentificationRequest.class);
-        when(requestFactory.newRequest(null, null))
-            .thenReturn(request);
-//        ole2Identifier.setRequestFactory(requestFactory);
+
 
         ole2Identifier.init();
         

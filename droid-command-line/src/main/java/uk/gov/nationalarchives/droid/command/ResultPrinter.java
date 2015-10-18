@@ -31,6 +31,7 @@
  */
 package uk.gov.nationalarchives.droid.command;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -40,18 +41,13 @@ import uk.gov.nationalarchives.droid.command.archive.ZipArchiveContentIdentifier
 import uk.gov.nationalarchives.droid.command.archive.TarArchiveContentIdentifier;
 import uk.gov.nationalarchives.droid.command.archive.ArcArchiveContentIdentifier;
 import uk.gov.nationalarchives.droid.command.archive.WarcArchiveContentIdentifier;
-import uk.gov.nationalarchives.droid.command.container.Ole2ContainerContentIdentifier;
-import uk.gov.nationalarchives.droid.command.container.ZipContainerContentIdentifier;
-import uk.gov.nationalarchives.droid.container.ContainerFileIdentificationRequestFactory;
+import uk.gov.nationalarchives.droid.command.container.ContainerContentIdentifier;
 import uk.gov.nationalarchives.droid.container.ContainerSignatureDefinitions;
 import uk.gov.nationalarchives.droid.container.TriggerPuid;
-import uk.gov.nationalarchives.droid.container.ole2.Ole2IdentifierEngine;
-import uk.gov.nationalarchives.droid.container.zip.ZipIdentifierEngine;
 import uk.gov.nationalarchives.droid.core.BinarySignatureIdentifier;
 import uk.gov.nationalarchives.droid.core.interfaces.IdentificationRequest;
 import uk.gov.nationalarchives.droid.core.interfaces.IdentificationResult;
 import uk.gov.nationalarchives.droid.core.interfaces.IdentificationResultCollection;
-import uk.gov.nationalarchives.droid.core.interfaces.archive.IdentificationRequestFactory;
 
 /**
  * File identification results printer.
@@ -69,14 +65,16 @@ public class ResultPrinter {
     
     private BinarySignatureIdentifier binarySignatureIdentifier;
     private ContainerSignatureDefinitions containerSignatureDefinitions;
+    private ContainerContentIdentifier ole2Identifier;
+    private ContainerContentIdentifier zipIdentifier;
     private List<TriggerPuid> triggerPuids;
-    private IdentificationRequestFactory requestFactory;
     private String path;
     private String slash;
     private String slash1;
     private String wrongSlash;
     private boolean archives;
     private boolean webArchives;
+    private File tempDir;
     private final String OLE2_CONTAINER = "OLE2";
     private final String ZIP_CONTAINER = "ZIP";
     private final String ZIP_ARCHIVE = "x-fmt/263";
@@ -92,7 +90,9 @@ public class ResultPrinter {
      * 
      * @param binarySignatureIdentifier     binary signature identifier
      * @param containerSignatureDefinitions container signatures
-     * @param path                          current file/container path 
+     * @param zipIdentifier                 zip container content identifier.
+     * @param ole2Identifier                ol2 container content identifier.
+     * @param path                          current file/container path
      * @param slash                         local path element delimiter
      * @param slash1                        local first container prefix delimiter
      * @param archives                      Should archives be examined?
@@ -100,6 +100,8 @@ public class ResultPrinter {
      */
     public ResultPrinter(final BinarySignatureIdentifier binarySignatureIdentifier,
             final ContainerSignatureDefinitions containerSignatureDefinitions,
+            ContainerContentIdentifier zipIdentifier,
+            ContainerContentIdentifier ole2Identifier,
             final String path, final String slash, final String slash1, boolean archives, boolean webArchives) {
     
         this.binarySignatureIdentifier = binarySignatureIdentifier;
@@ -113,6 +115,16 @@ public class ResultPrinter {
         if (containerSignatureDefinitions != null) {
             triggerPuids = containerSignatureDefinitions.getTiggerPuids();
         }
+        this.zipIdentifier = zipIdentifier;
+        this.ole2Identifier = ole2Identifier;
+    }
+
+    public void setOle2Identifier(ContainerContentIdentifier identifier) {
+        this.ole2Identifier = identifier;
+    }
+
+    public void setZipIdentifier(ContainerContentIdentifier identifier) {
+        this.zipIdentifier = identifier;
     }
     
     /**
@@ -200,17 +212,10 @@ public class ResultPrinter {
                     TriggerPuid containerPuid = getTriggerPuidByPuid(filePuid);
                     if (containerPuid != null) {
                             
-                        requestFactory = new ContainerFileIdentificationRequestFactory();
                         String containerType = containerPuid.getContainerType();
 
                         if (OLE2_CONTAINER.equals(containerType)) {
                             try {
-                                Ole2ContainerContentIdentifier ole2Identifier =
-                                        new Ole2ContainerContentIdentifier();
-                                ole2Identifier.init(containerSignatureDefinitions, containerType);
-                                Ole2IdentifierEngine ole2IdentifierEngine = new Ole2IdentifierEngine();
-                                ole2IdentifierEngine.setRequestFactory(requestFactory);
-                                ole2Identifier.setIdentifierEngine(ole2IdentifierEngine);
                                 containerResults = ole2Identifier.process(
                                     request.getSourceInputStream(), containerResults);
                             } catch (IOException e) {   // carry on after container i/o problems
@@ -218,12 +223,6 @@ public class ResultPrinter {
                             }
                         } else if (ZIP_CONTAINER.equals(containerType)) {
                             try {
-                                ZipContainerContentIdentifier zipIdentifier =
-                                            new ZipContainerContentIdentifier();
-                                zipIdentifier.init(containerSignatureDefinitions, containerType);
-                                ZipIdentifierEngine zipIdentifierEngine = new ZipIdentifierEngine();
-                                zipIdentifierEngine.setRequestFactory(requestFactory);
-                                zipIdentifier.setIdentifierEngine(zipIdentifierEngine);
                                 containerResults = zipIdentifier.process(
                                     request.getSourceInputStream(), containerResults);
                             } catch (IOException e) {   // carry on after container i/o problems

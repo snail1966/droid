@@ -113,8 +113,7 @@ public class ArcArchiveContentIdentifierTest {
             FileSystemIdentificationRequest request =
                 new FileSystemIdentificationRequest(metaData, identifier);
 
-            InputStream arcStream = new FileInputStream(file);
-            request.open(arcStream);
+            request.open(file);
             arcArchiveContentIdentifier.identify(uri, request);
         } catch (Exception e) {
             throw new CommandExecutionException(e);

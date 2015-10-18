@@ -54,7 +54,7 @@ import static org.junit.Assert.*;
 public class TarEntryIdentificationRequestTest {
 
     private static File tmpDir;
-    private TarEntryIdentificationRequest tarResource;
+    private InputStreamIdentificationRequest tarResource;
     private String fileName;
     private TarArchiveInputStream in;
     private String entryName;
@@ -91,7 +91,7 @@ public class TarEntryIdentificationRequestTest {
                 break;
             }
         }
-        tarResource = new TarEntryIdentificationRequest(metaData, identifier, tmpDir);
+        tarResource = new InputStreamIdentificationRequest(metaData, identifier, tmpDir);
         tarResource.open(in);
     }
     

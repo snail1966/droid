@@ -31,6 +31,7 @@
  */
 package uk.gov.nationalarchives.droid.container;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -51,4 +52,12 @@ public interface IdentifierEngine {
      * @throws IOException if a problem occurred with processing
      */
     void process(IdentificationRequest  request, ContainerSignatureMatchCollection matches) throws IOException;
+
+    /**
+     * Sets the temporary folder to use if the identifier engine has to write
+     * any streams out to temporary files.
+     *
+     * @param tempDir The temporary folder to use for temp files.
+     */
+    void setTempDir(File tempDir);
 }

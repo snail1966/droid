@@ -56,7 +56,6 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 import uk.gov.nationalarchives.droid.core.BinarySignatureIdentifier;
-import uk.gov.nationalarchives.droid.core.interfaces.IdentificationException;
 import uk.gov.nationalarchives.droid.core.interfaces.IdentificationRequest;
 import uk.gov.nationalarchives.droid.core.interfaces.IdentificationResultCollection;
 import uk.gov.nationalarchives.droid.core.interfaces.RequestIdentifier;
@@ -64,7 +63,6 @@ import uk.gov.nationalarchives.droid.core.interfaces.ResultHandler;
 import uk.gov.nationalarchives.droid.core.interfaces.archive.ArchiveFormatResolver;
 import uk.gov.nationalarchives.droid.core.interfaces.archive.ArchiveHandlerFactory;
 import uk.gov.nationalarchives.droid.core.interfaces.archive.TrueZipArchiveHandler;
-import uk.gov.nationalarchives.droid.core.interfaces.archive.ZipEntryRequestFactory;
 import uk.gov.nationalarchives.droid.core.interfaces.resource.FileSystemIdentificationRequest;
 import uk.gov.nationalarchives.droid.core.interfaces.resource.RequestMetaData;
 import uk.gov.nationalarchives.droid.core.SignatureParseException;
@@ -98,7 +96,6 @@ public class SubmissionGatewayTest {
 
         TrueZipArchiveHandler zipHandler = new TrueZipArchiveHandler();
         zipHandler.setDroidCore(submissionGateway);
-        zipHandler.setFactory(new ZipEntryRequestFactory());
         zipHandler.setResultHandler(resultHandler);
 
         when(archiveHandlerFactory.getHandler("ZIP")).thenReturn(zipHandler);

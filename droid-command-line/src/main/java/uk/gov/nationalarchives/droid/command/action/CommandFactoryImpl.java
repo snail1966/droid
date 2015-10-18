@@ -244,7 +244,7 @@ public class CommandFactoryImpl implements CommandFactory {
         command.setWebArchives(cli.hasOption(CommandLineParam.WEB_ARCHIVES.toString()));
         command.setExtensionFilter(extensions);
         command.setQuiet(cli.hasOption(CommandLineParam.QUIET.toString()));
-
+        command.setTempDir(context.getGlobalConfig().getTempDir());
         return command;
     }
 

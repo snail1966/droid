@@ -43,8 +43,8 @@ import uk.gov.nationalarchives.droid.container.ContainerSignatureDefinitions;
 import uk.gov.nationalarchives.droid.core.BinarySignatureIdentifier;
 import uk.gov.nationalarchives.droid.core.interfaces.IdentificationRequest;
 import uk.gov.nationalarchives.droid.core.interfaces.RequestIdentifier;
+import uk.gov.nationalarchives.droid.core.interfaces.resource.InputStreamIdentificationRequest;
 import uk.gov.nationalarchives.droid.core.interfaces.resource.RequestMetaData;
-import uk.gov.nationalarchives.droid.core.interfaces.resource.TarEntryIdentificationRequest;
 
 /**
  * Identifier for files held in a TAR archive.
@@ -90,8 +90,8 @@ public class TarArchiveContentIdentifier extends ArchiveContentIdentifier {
                     if (!entry.isDirectory()) {
                         final RequestMetaData metaData = new RequestMetaData(1L, 2L, name);
                         final RequestIdentifier identifier = new RequestIdentifier(uri);
-                        final TarEntryIdentificationRequest tarRequest =
-                            new TarEntryIdentificationRequest(metaData, identifier, getTmpDir());
+                        final IdentificationRequest<InputStream> tarRequest =
+                            new InputStreamIdentificationRequest(metaData, identifier, getTmpDir(), false);
                         expandContainer(tarRequest, in, newPath);
                     }
                 }

@@ -33,8 +33,10 @@ package uk.gov.nationalarchives.droid.command.archive;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 
+import net.byteseek.io.reader.ReaderInputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
 import org.apache.commons.compress.compressors.gzip.GzipUtils;
 
@@ -43,7 +45,7 @@ import uk.gov.nationalarchives.droid.container.ContainerSignatureDefinitions;
 import uk.gov.nationalarchives.droid.core.BinarySignatureIdentifier;
 import uk.gov.nationalarchives.droid.core.interfaces.IdentificationRequest;
 import uk.gov.nationalarchives.droid.core.interfaces.RequestIdentifier;
-import uk.gov.nationalarchives.droid.core.interfaces.resource.GZipIdentificationRequest;
+import uk.gov.nationalarchives.droid.core.interfaces.resource.InputStreamIdentificationRequest;
 import uk.gov.nationalarchives.droid.core.interfaces.resource.RequestMetaData;
 
 /**
@@ -89,18 +91,15 @@ public class GZipArchiveContentIdentifier extends ArchiveContentIdentifier {
         
         final RequestIdentifier identifier = new RequestIdentifier(newUri);
         final RequestMetaData metaData = new RequestMetaData(SIZE, TIME, uri.getPath());
-        final GZipIdentificationRequest gzRequest = new GZipIdentificationRequest(
+        final IdentificationRequest<InputStream> gzRequest = new InputStreamIdentificationRequest(
                 metaData, identifier, getTmpDir());
 
         GzipCompressorInputStream gzin = null;
         try {
-            gzin = new GzipCompressorInputStream(
-                new FileInputStream(request.getSourceFile()), true);
-
+            gzin = new GzipCompressorInputStream(request.getSourceInputStream());
             expandContainer(gzRequest, gzin, newPath);
-
         } catch (IOException ioe) {
-            System.err.println(ioe + " (" + newPath + ")"); // continue after corrupt archive
+            //System.err.println(ioe + " (" + newPath + ")"); // continue after corrupt archive
         } finally {
             if (gzin != null) {
                 try {

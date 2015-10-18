@@ -43,8 +43,8 @@ import uk.gov.nationalarchives.droid.container.ContainerSignatureDefinitions;
 import uk.gov.nationalarchives.droid.core.BinarySignatureIdentifier;
 import uk.gov.nationalarchives.droid.core.interfaces.IdentificationRequest;
 import uk.gov.nationalarchives.droid.core.interfaces.RequestIdentifier;
+import uk.gov.nationalarchives.droid.core.interfaces.resource.InputStreamIdentificationRequest;
 import uk.gov.nationalarchives.droid.core.interfaces.resource.RequestMetaData;
-import uk.gov.nationalarchives.droid.core.interfaces.resource.ZipEntryIdentificationRequest;
 
 /**
  * Identifier for files held in a ZIP archive.
@@ -92,9 +92,8 @@ public class ZipArchiveContentIdentifier extends ArchiveContentIdentifier {
                     if (!entry.isDirectory()) {
                         final RequestMetaData metaData = new RequestMetaData(1L, 2L, name);
                         final RequestIdentifier identifier = new RequestIdentifier(uri);
-                        final ZipEntryIdentificationRequest zipRequest =
-                            new ZipEntryIdentificationRequest(metaData, identifier, getTmpDir());
-                        expandContainer(zipRequest, in, newPath);
+                        final IdentificationRequest<InputStream> zipRequest =
+                            new InputStreamIdentificationRequest(metaData, identifier, getTmpDir());                        expandContainer(zipRequest, in, newPath);
                     }
                 }
             } finally {

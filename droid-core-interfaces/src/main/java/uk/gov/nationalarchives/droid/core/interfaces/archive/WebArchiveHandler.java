@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2012, The National Archives <pronom@nationalarchives.gsi.gov.uk>
+ * Copyright (c) 2012-15, The National Archives <pronom@nationalarchives.gsi.gov.uk>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,6 +31,7 @@
  */
 package uk.gov.nationalarchives.droid.core.interfaces.archive;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -45,6 +46,7 @@ import uk.gov.nationalarchives.droid.core.interfaces.IdentificationResultImpl;
 import uk.gov.nationalarchives.droid.core.interfaces.AsynchDroid;
 import uk.gov.nationalarchives.droid.core.interfaces.IdentificationRequest;
 import uk.gov.nationalarchives.droid.core.interfaces.ResultHandler;
+import uk.gov.nationalarchives.droid.core.interfaces.resource.InputStreamIdentificationRequest;
 import uk.gov.nationalarchives.droid.core.interfaces.resource.RequestMetaData;
 
 
@@ -54,21 +56,14 @@ import uk.gov.nationalarchives.droid.core.interfaces.resource.RequestMetaData;
  * @author gseaman
  * Common code for WarcArchiveHandler and ArcArchiveHandler
  */
-public abstract class WebArchiveHandler {
+public abstract class WebArchiveHandler implements ArchiveHandler {
     /**
      * Save importing all the http codes
      */
     protected static final int HTTP_ACCEPTED = 200;
+    private File tempDir;
     private AsynchDroid droidCore;
-    private IdentificationRequestFactory factory;
     private ResultHandler resultHandler;
-
-    /**
-     * @param factory the factory to set
-     */
-    public final void setFactory(IdentificationRequestFactory factory) {
-        this.factory = factory;
-    }
 
     /**
      * @param droidCore the droidCore to set
@@ -124,7 +119,7 @@ public abstract class WebArchiveHandler {
                 new RequestIdentifier(ArchiveFileUtils.toWebArchiveUri(webArchiveType, parentName, metaData.getName()));
         identifier.setAncestorId(originatorNodeId);
         identifier.setParentResourceId(correlationId);
-        IdentificationRequest request = factory.newRequest(metaData, identifier);
+        IdentificationRequest<InputStream> request = new InputStreamIdentificationRequest(metaData, identifier, tempDir);
         request.open(payload); // get the inputstream back from the record, and write it out to file
         droidCore.submit(request);
     }
@@ -203,6 +198,11 @@ public abstract class WebArchiveHandler {
         }
 
         return longestParentId;
+    }
+
+    @Override
+    public void setTempDir(File tempDir) {
+        this.tempDir = tempDir;
     }
 
 }

@@ -46,8 +46,7 @@ import uk.gov.nationalarchives.droid.container.ContainerSignatureDefinitions;
 import uk.gov.nationalarchives.droid.core.BinarySignatureIdentifier;
 import uk.gov.nationalarchives.droid.core.interfaces.IdentificationRequest;
 import uk.gov.nationalarchives.droid.core.interfaces.RequestIdentifier;
-import uk.gov.nationalarchives.droid.core.interfaces.archive.IdentificationRequestFactory;
-import uk.gov.nationalarchives.droid.core.interfaces.archive.WebArchiveEntryRequestFactory;
+import uk.gov.nationalarchives.droid.core.interfaces.resource.InputStreamIdentificationRequest;
 import uk.gov.nationalarchives.droid.core.interfaces.resource.RequestMetaData;
 
 /**
@@ -87,7 +86,6 @@ public class WarcArchiveContentIdentifier extends ArchiveContentIdentifier {
 
         final String newPath = makeContainerURI("warc", request.getFileName());
         setSlash1("");
-        final IdentificationRequestFactory factory  = new WebArchiveEntryRequestFactory();
         try {
             InputStream warcIn = request.getSourceInputStream();
             WarcReader warcReader = WarcReaderFactory.getReader(warcIn);
@@ -110,7 +108,7 @@ public class WarcArchiveContentIdentifier extends ArchiveContentIdentifier {
                             name);
 
                         final RequestIdentifier identifier = new RequestIdentifier(uri);
-                        IdentificationRequest warcRequest = factory.newRequest(metaData, identifier);
+                        IdentificationRequest<InputStream> warcRequest = new InputStreamIdentificationRequest(metaData, identifier, getTmpDir());
                         ByteCountingPushBackInputStream in =
                                 (ByteCountingPushBackInputStream) record.getPayloadContent();
 
