@@ -37,13 +37,12 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
-import uk.gov.nationalarchives.droid.container.ContainerIdentifierInit;
-import uk.gov.nationalarchives.droid.container.ContainerSignatureDefinitions;
-import uk.gov.nationalarchives.droid.container.ContainerSignatureMatch;
-import uk.gov.nationalarchives.droid.container.ContainerSignatureMatchCollection;
-import uk.gov.nationalarchives.droid.container.FileFormatMapping;
-import uk.gov.nationalarchives.droid.container.IdentifierEngine;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import uk.gov.nationalarchives.droid.container.*;
+import uk.gov.nationalarchives.droid.container.ole2.Ole2IdentifierEngine;
+import uk.gov.nationalarchives.droid.container.zip.ZipIdentifierEngine;
 import uk.gov.nationalarchives.droid.core.interfaces.IdentificationMethod;
 import uk.gov.nationalarchives.droid.core.interfaces.IdentificationRequest;
 import uk.gov.nationalarchives.droid.core.interfaces.IdentificationResultCollection;
@@ -155,5 +154,42 @@ public abstract class AbstractContainerContentIdentifier implements ContainerCon
     @Override
     public void setTempDir(File tempDir) {
         this.tempDir = tempDir;
+    }
+
+    public static AbstractContainerContentIdentifier getContainerContentIdentifier(ContainerContentIdentifierType identifierType, ContainerSignatureDefinitions containerSignatureDefinitions, File tempDir) {
+
+        //BNO: TODO: We currently return a new instance each time - e.g. each request from ArchiveContentIdentifier
+        // will result in a new instance.  Could we have just a single instance of each subtype?  Only the temp
+        // paths seem to be different...
+        AbstractContainerContentIdentifier containerContentIdentifier = null;
+        AbstractIdentifierEngine identifierEngine = null;
+
+        try {
+            switch(identifierType) {
+                case OLE2:
+                    containerContentIdentifier = new Ole2ContainerContentIdentifier();
+                    identifierEngine  = new Ole2IdentifierEngine();
+                    break;
+
+                case ZIP:
+                    containerContentIdentifier = new ZipContainerContentIdentifier();
+                    identifierEngine = new ZipIdentifierEngine();
+                    break;
+                default:
+                    throw new Exception("Unsupported container identifier type!");
+            }
+            containerContentIdentifier.init(containerSignatureDefinitions, identifierType.toString());
+
+            containerContentIdentifier.setIdentifierEngine(identifierEngine);
+            containerContentIdentifier.setTempDir(tempDir);
+        } catch (Exception e) {
+            //TODO - Log?
+        }
+        return containerContentIdentifier;
+
+    }
+
+    public enum ContainerContentIdentifierType {
+        OLE2, ZIP
     }
 }

@@ -74,6 +74,7 @@ public class TarArchiveContentIdentifier extends ArchiveContentIdentifier {
      * @throws CommandExecutionException When an exception happens during execution
      * @throws CommandExecutionException When an exception happens during archive access
      */
+    @Override
     public void identify(final URI uri, final IdentificationRequest request)
         throws CommandExecutionException {
 

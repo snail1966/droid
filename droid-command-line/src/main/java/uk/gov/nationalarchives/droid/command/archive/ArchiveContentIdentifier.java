@@ -34,7 +34,10 @@ package uk.gov.nationalarchives.droid.command.archive;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 
+import uk.gov.nationalarchives.droid.command.container.AbstractContainerContentIdentifier;
+import uk.gov.nationalarchives.droid.command.container.ContainerContentIdentifier;
 import uk.gov.nationalarchives.droid.container.ContainerSignatureDefinitions;
 import uk.gov.nationalarchives.droid.command.ResultPrinter;
 import uk.gov.nationalarchives.droid.command.action.CommandExecutionException;
@@ -58,6 +61,8 @@ public abstract class ArchiveContentIdentifier {
     private File tmpDir;
     private String path;
     private Boolean expandWebArchives;
+
+    protected ResultPrinter resultPrinter;
 
 
     /**
@@ -196,11 +201,20 @@ public abstract class ArchiveContentIdentifier {
             final IdentificationResultCollection results =
                     getBinarySignatureIdentifier().matchBinarySignatures(request);
             // CHECKSTYLE:OFF
-            final ResultPrinter resultPrinter =
-                    new ResultPrinter(getBinarySignatureIdentifier(),
-                            getContainerSignatureDefinitions(), newPath, getSlash(), getSlash1(), true, getExpandWebArchives());
+
+            if(this.resultPrinter == null) {
+                // BNO: TODO: See commennt in static factory method.  Possibly retuen singleton for each subtype?
+                final ContainerContentIdentifier ole2Identifier = AbstractContainerContentIdentifier.getContainerContentIdentifier(AbstractContainerContentIdentifier.ContainerContentIdentifierType.OLE2, getContainerSignatureDefinitions(), getTmpDir());
+                final ContainerContentIdentifier zipIdentifier = AbstractContainerContentIdentifier.getContainerContentIdentifier(AbstractContainerContentIdentifier.ContainerContentIdentifierType.ZIP, getContainerSignatureDefinitions(), getTmpDir());
+
+                final ResultPrinter resultPrinter =
+                        new ResultPrinter(getBinarySignatureIdentifier(),
+                                getContainerSignatureDefinitions(), zipIdentifier, ole2Identifier, newPath,  getSlash(), getSlash1(), true, getExpandWebArchives());
+                this.resultPrinter = resultPrinter;
+            }
+
             // CHECKSTYLE:ON
-            resultPrinter.print(results, request);
+            this.resultPrinter.print(results, request);
             request.close();
         }  catch (IOException ioe) {
             System.err.println(ioe + " " + newPath); // continue after corrupt archive
@@ -215,4 +229,6 @@ public abstract class ArchiveContentIdentifier {
         }
     }
 
+    public abstract void identify(final URI uri, final IdentificationRequest request)
+            throws CommandExecutionException;
 }

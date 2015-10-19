@@ -49,6 +49,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import uk.gov.nationalarchives.droid.command.ResultPrinter;
+import uk.gov.nationalarchives.droid.command.container.AbstractContainerContentIdentifier;
 import uk.gov.nationalarchives.droid.command.container.ContainerContentIdentifier;
 import uk.gov.nationalarchives.droid.command.container.Ole2ContainerContentIdentifier;
 import uk.gov.nationalarchives.droid.command.container.ZipContainerContentIdentifier;
@@ -171,6 +172,7 @@ public class NoProfileRunCommand implements DroidCommand {
             }
         }
 
+        /*
         ContainerContentIdentifier ole2Identifier = new Ole2ContainerContentIdentifier();
         ole2Identifier.init(containerSignatureDefinitions, OLE2_CONTAINER);
         Ole2IdentifierEngine ole2IdentifierEngine = new Ole2IdentifierEngine();
@@ -182,6 +184,9 @@ public class NoProfileRunCommand implements DroidCommand {
         ZipIdentifierEngine zipIdentifierEngine = new ZipIdentifierEngine();
         zipIdentifier.setIdentifierEngine(zipIdentifierEngine);
         zipIdentifierEngine.setTempDir(tempDir);
+        */
+        ContainerContentIdentifier ole2Identifier = AbstractContainerContentIdentifier.getContainerContentIdentifier(AbstractContainerContentIdentifier.ContainerContentIdentifierType.OLE2,containerSignatureDefinitions,tempDir);
+        ContainerContentIdentifier zipIdentifier = AbstractContainerContentIdentifier.getContainerContentIdentifier(AbstractContainerContentIdentifier.ContainerContentIdentifierType.ZIP,containerSignatureDefinitions,tempDir);
 
         path = "";
         ResultPrinter resultPrinter =

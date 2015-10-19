@@ -42,6 +42,7 @@ import org.jwat.arc.ArcRecordBase;
 
 import org.jwat.common.Uri;
 
+import uk.gov.nationalarchives.droid.command.ResultPrinter;
 import uk.gov.nationalarchives.droid.command.action.CommandExecutionException;
 import uk.gov.nationalarchives.droid.container.ContainerSignatureDefinitions;
 import uk.gov.nationalarchives.droid.core.BinarySignatureIdentifier;
@@ -71,6 +72,14 @@ public class ArcArchiveContentIdentifier extends ArchiveContentIdentifier {
     
         super(binarySignatureIdentifier, containerSignatureDefinitions, path, slash, slash1, false);
     }
+
+    public ArcArchiveContentIdentifier(final BinarySignatureIdentifier binarySignatureIdentifier,
+                                       final ContainerSignatureDefinitions containerSignatureDefinitions,
+                                       final String path, final String slash, final String slash1, final ResultPrinter resultPrinter) {
+
+        this(binarySignatureIdentifier, containerSignatureDefinitions, path, slash, slash1);
+        this.resultPrinter = resultPrinter;
+    }
     
     /**
      * @param uri The URI of the file to identify
@@ -78,6 +87,7 @@ public class ArcArchiveContentIdentifier extends ArchiveContentIdentifier {
      * @throws CommandExecutionException When an exception happens during execution
      * @throws CommandExecutionException When an exception happens during archive access
      */
+    @Override
     public void identify(final URI uri, final IdentificationRequest request)
         throws CommandExecutionException {
         /**

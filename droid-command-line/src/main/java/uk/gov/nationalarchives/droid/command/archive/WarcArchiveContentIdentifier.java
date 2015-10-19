@@ -41,6 +41,7 @@ import org.jwat.warc.WarcReader;
 import org.jwat.warc.WarcReaderFactory;
 import org.jwat.warc.WarcRecord;
 
+import uk.gov.nationalarchives.droid.command.ResultPrinter;
 import uk.gov.nationalarchives.droid.command.action.CommandExecutionException;
 import uk.gov.nationalarchives.droid.container.ContainerSignatureDefinitions;
 import uk.gov.nationalarchives.droid.core.BinarySignatureIdentifier;
@@ -70,13 +71,22 @@ public class WarcArchiveContentIdentifier extends ArchiveContentIdentifier {
     
         super(binarySignatureIdentifier, containerSignatureDefinitions, path, slash, slash1, false);
     }
-    
+
+    public WarcArchiveContentIdentifier(final BinarySignatureIdentifier binarySignatureIdentifier,
+                                        final ContainerSignatureDefinitions containerSignatureDefinitions,
+                                        final String path, final String slash, final String slash1, final ResultPrinter resultPrinter) {
+
+        this(binarySignatureIdentifier, containerSignatureDefinitions, path, slash, slash1);
+        this.resultPrinter = resultPrinter;
+    }
+
     /**
      * @param uri The URI of the file to identify
      * @param request The Identification Request
      * @throws CommandExecutionException When an exception happens during execution
      * @throws CommandExecutionException When an exception happens during archive access
      */
+    @Override
     public void identify(final URI uri, final IdentificationRequest request)
         throws CommandExecutionException {
         /**

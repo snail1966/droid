@@ -36,11 +36,7 @@ import java.io.IOException;
 import java.util.List;
 
 import uk.gov.nationalarchives.droid.command.action.CommandExecutionException;
-import uk.gov.nationalarchives.droid.command.archive.GZipArchiveContentIdentifier;
-import uk.gov.nationalarchives.droid.command.archive.ZipArchiveContentIdentifier;
-import uk.gov.nationalarchives.droid.command.archive.TarArchiveContentIdentifier;
-import uk.gov.nationalarchives.droid.command.archive.ArcArchiveContentIdentifier;
-import uk.gov.nationalarchives.droid.command.archive.WarcArchiveContentIdentifier;
+import uk.gov.nationalarchives.droid.command.archive.*;
 import uk.gov.nationalarchives.droid.command.container.ContainerContentIdentifier;
 import uk.gov.nationalarchives.droid.container.ContainerSignatureDefinitions;
 import uk.gov.nationalarchives.droid.container.TriggerPuid;
