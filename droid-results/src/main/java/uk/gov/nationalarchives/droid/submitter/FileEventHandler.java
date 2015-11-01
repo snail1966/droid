@@ -90,9 +90,17 @@ public class FileEventHandler {
      * @param nodeId
      *            an optional node ID for the request.
      */
+
+
     public void onEvent(File file, ResourceId parentId, ResourceId nodeId) {
 
-        URI uri = file.toURI();
+        URI uri = null;
+        if(file instanceof FileWithUri) {
+            uri = ((FileWithUri)file).getUri();
+        } else {
+            uri = file.toURI();
+        }
+
         RequestMetaData metaData = new RequestMetaData(file.length(), file
                 .lastModified(), file.getName());
 
@@ -117,7 +125,6 @@ public class FileEventHandler {
             log.debug("Interrupted while throttle active.", e);
         }
     }
-
     /**
      * @return the submission throttle
      */

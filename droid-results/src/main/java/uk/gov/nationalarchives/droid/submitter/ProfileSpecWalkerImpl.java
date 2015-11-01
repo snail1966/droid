@@ -31,19 +31,20 @@
  */
 package uk.gov.nationalarchives.droid.submitter;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import uk.gov.nationalarchives.droid.core.interfaces.ResourceId;
 import uk.gov.nationalarchives.droid.profile.AbstractProfileResource;
 import uk.gov.nationalarchives.droid.profile.ProfileSpec;
 import uk.gov.nationalarchives.droid.results.handlers.ProgressMonitor;
 import uk.gov.nationalarchives.droid.submitter.FileWalker.ProgressEntry;
 import uk.gov.nationalarchives.droid.submitter.ProfileWalkState.WalkStatus;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+
+import java.net.URI;
 
 /**
  * Iterates over all resources in the profile spec.
@@ -102,6 +103,9 @@ public class ProfileSpecWalkerImpl implements ProfileSpecWalker {
 
                     @Override
                     public ResourceId handle(File file, int depth, ProgressEntry parent) { 
+
+
+                        URI uri=  file instanceof FileWithUri ?  ((FileWithUri)file).getUri() : file.toURI();
                         if (ProfileSpecJobCounter.PROGRESS_DEPTH_LIMIT < 0 ||
                             depth <= ProfileSpecJobCounter.PROGRESS_DEPTH_LIMIT) {
                             progressMonitor.startJob(file.toURI());
@@ -139,8 +143,10 @@ public class ProfileSpecWalkerImpl implements ProfileSpecWalker {
                 walkState.setWalkStatus(WalkStatus.IN_PROGRESS);
                 fileWalker.walk();
             } else {
-                progressMonitor.startJob(resource.getUri());
-                fileEventHandler.onEvent(new File(resource.getUri()), null, null);
+                URI uri = resource.getUri();
+                progressMonitor.startJob(uri);
+                //fileEventHandler.onEvent(new File(uri),uri, null, null);
+                fileEventHandler.onEvent(new FileWithUri(uri), null, null);
             }
             
             fastForward = false;

@@ -32,6 +32,7 @@
 package uk.gov.nationalarchives.droid.submitter;
 
 import java.io.File;
+import java.net.URI;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -79,8 +80,9 @@ public class ReplaySubmitter {
                 ProfileResourceNode node = resultHandlerDao.loadNode(ancestorId);
                 ResourceId parentId = getParentResourceId(node);
                 resultHandlerDao.deleteNode(node.getId());
-                File file = new File(node.getUri());
-                fileEventHandler.onEvent(file, parentId, null);
+                URI uri = node.getUri();
+                FileWithUri file = new FileWithUri(uri);
+                fileEventHandler.onEvent(file,parentId, null);
             }
         }
     }
