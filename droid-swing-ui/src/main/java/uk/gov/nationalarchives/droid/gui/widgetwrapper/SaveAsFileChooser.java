@@ -155,7 +155,7 @@ public class SaveAsFileChooser extends JFileChooser {
      */
     public void addChoosableFileFilterWithDefaultExtension(FileFilter filter, String ext) {
         filters.put(filter, ext);
-        addChoosableFileFilter(filter);
+        if (filter != null) { addChoosableFileFilter(filter); }
     }
     
     

@@ -62,6 +62,7 @@ import uk.gov.nationalarchives.droid.report.ReportTransformer;
 public class ExportReportAction {
 
     private static final String XHTML_TRANSFORM_LOCATION = "Web page.html.xsl";
+    public static final String MAC_OS_X = "Mac OS X";
 
     private ReportTransformer reportTransformer;
     private SaveAsFileChooser exportFileChooser;
@@ -127,7 +128,12 @@ public class ExportReportAction {
     private void initialiseSaveAsDialog() {
         exportFileChooser = new SaveAsFileChooser();
         exportFileChooser.setSelectedFile(lastSelectedDir);
-        exportFileChooser.setAcceptAllFileFilterUsed(false);
+
+        //BUG FIX: https://github.com/digital-preservation/droid/issues/74
+        if (!System.getProperty("os.name").equalsIgnoreCase(MAC_OS_X))  {
+            exportFileChooser.setAcceptAllFileFilterUsed(false);
+        }
+
         final String dialogTitle = "Export Report";
         exportFileChooser.setWarningDialogTitle(dialogTitle);
         exportFileChooser.setWarningMessage("%s already exists.\nDo you want to replace it?");
